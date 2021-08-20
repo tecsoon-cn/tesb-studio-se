@@ -71,6 +71,7 @@ import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
 import org.talend.utils.io.FilesUtils;
 
@@ -107,7 +108,10 @@ public class CreateMavenBundlePom extends CreateMavenJobPom {
      */
     @Override
     public void create(IProgressMonitor monitor) throws Exception {
-
+        if (ProcessorUtilities.isCIMode() && !Boolean.getBoolean("talend.ci.generate.pom")) {
+            // avoid to generate job pom for CI except generateAllPoms
+            return;
+        }
         IFile curPomFile = getPomFile();
 
         if (curPomFile == null) {
